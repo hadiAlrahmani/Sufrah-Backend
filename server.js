@@ -11,6 +11,7 @@ const usersRouter = require('./controllers/users');
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,6 +26,7 @@ app.use('/auth', usersRouter);
 app.use('/restaurants', restaurantRoutes);
 app.use('/menuItems', menuRoutes);
 app.use('/orders', orderRoutes);
+app.use('/notifications', notificationRoutes);
 
 
 app.listen(PORT, () => {
