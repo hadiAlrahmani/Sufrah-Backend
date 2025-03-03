@@ -96,7 +96,7 @@ const updateOrderStatus = async (req, res) => {
 
         await Notification.create({
           user: order.user,
-          message: `Your order status has been updated to ${status}`
+          message: `UPDATE: Your order is now ${status}`
       });
 
         res.status(200).json(order);
