@@ -1,3 +1,4 @@
+
 const Order = require('../models/orderModel');
 const MenuItem = require('../models/menuItemModel');
 const Notification = require('../models/notificationModel');
@@ -57,10 +58,16 @@ const getAllOrders = async (req, res) => {
 
 const getUserOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ user: req.user._id }).populate('restaurant', 'name');
+        const orders = await Order.find({ user: req.user._id })
+            .populate("restaurant", "name")
+            .populate({
+                path: "items.menuItem",
+                select: "name price",
+            });
+
         res.status(200).json(orders);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch user orders' });
+        res.status(500).json({ error: "Failed to fetch user orders" });
     }
 };
 
@@ -130,7 +137,6 @@ module.exports = {
 
 //! CODE GRAVEYARD
 
-
 // const createOrder = async (req, res) => {
 //   try {
 //     // console.log("Request Body:", req.body);
@@ -165,3 +171,4 @@ module.exports = {
 //   }
 // };
 // This Graveyard create order done with the help of internet
+
