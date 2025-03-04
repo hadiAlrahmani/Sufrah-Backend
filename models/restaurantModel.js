@@ -19,7 +19,12 @@ const restaurantSchema = new mongoose.Schema({
   isOpen: {
     type: Boolean,
     default: true
-  }
+  },
+  owner: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true 
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);
