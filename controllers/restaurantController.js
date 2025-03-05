@@ -7,10 +7,14 @@ const createRestaurant = async (req, res) => {
         .status(403)
         .json({ error: "Access denied. Admins only can create restaurants." });
     }
-
-    const newRestaurant = await Restaurant.create(req.body);
+    // Add the user (admin) as the owner of the restaurant
+    const newRestaurant = await Restaurant.create({
+      ...req.body,
+      owner: req.user._id,
+    });
     res.status(201).json(newRestaurant);
   } catch (error) {
+    console.error("Error creating restaurant:", error);
     res
       .status(400)
       .json({ error: "Failed to create restaurant", details: error.message });
