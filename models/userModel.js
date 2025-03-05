@@ -1,30 +1,28 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require("mongoose");
 
-const userSchema = new Schema({
-  
-  username: { 
+const userSchema = new mongoose.Schema({
+  username: {
     type: String,
     required: true,
-    unique: true 
+    unique: true,
   },
 
-  hashedPassword: { 
+  hashedPassword: {
     type: String,
-    required: true
+    required: true,
   },
 
   role: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
-  }
-
+    enum: ["user", "admin"],
+    default: "user",
+  },
 });
 
-userSchema.set('toJSON', {
+userSchema.set("toJSON", {
   transform: (doc, obj) => {
     delete obj.hashedPassword;
-  }
+  },
 });
 
-module.exports = model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);
