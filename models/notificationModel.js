@@ -1,19 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); // Import Mongoose for MongoDB object modeling
 
+// Define the schema for notifications
 const notificationSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId, // Reference to the User model
         ref: 'User',
-        required: true
+        required: true // This field is required
     },
     message: {
         type: String,
-        required: true
+        required: true // This field is required
     },
     read: {
         type: Boolean,
-        default: false
+        default: false // Default value for read status
     }
-}, { timestamps: true });
+}, { timestamps: true }); // Automatically manage createdAt and updatedAt fields
 
-module.exports = mongoose.model('Notification', notificationSchema);
+module.exports = mongoose.model('Notification', notificationSchema); // Export the Notification model
