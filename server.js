@@ -1,38 +1,37 @@
-const dotenv = require('dotenv');
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
+const dotenv = require('dotenv'); // Load environment variables from .env file
+const express = require('express'); // Import Express framework
+const cors = require('cors'); // Enable Cross-Origin Resource Sharing
+const morgan = require('morgan'); // HTTP request logger middleware
 
-dotenv.config();
-require('./config/database');
+dotenv.config(); // Initialize dotenv configuration
+require('./config/database'); // Set up database connection
 
-// Controllers
-const usersRouter = require('./controllers/users');
-const restaurantRoutes = require('./routes/restaurantRoutes');
-const menuRoutes = require('./routes/menuRoutes');
-const orderRoutes = require('./routes/orderRoutes');
-const notificationRoutes = require('./routes/notificationRoutes');
+// Import controllers and routes
+const usersRouter = require('./controllers/users'); // User-related routes
+const restaurantRoutes = require('./routes/restaurantRoutes'); // Restaurant-related routes
+const menuRoutes = require('./routes/menuRoutes'); // Menu item-related routes
+const orderRoutes = require('./routes/orderRoutes'); // Order-related routes
+const notificationRoutes = require('./routes/notificationRoutes'); // Notification-related routes
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const app = express(); // Create an Express application
+const PORT = process.env.PORT || 3000; // Set the port to listen on
 
-// Middlewares
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
+// Middleware setup
+app.use(cors()); // Allow cross-origin requests
+app.use(morgan('dev')); // Log HTTP requests in development mode
+app.use(express.json()); // Parse incoming JSON requests
 
-// Routes
-app.use('/auth', usersRouter);
-app.use('/restaurants', restaurantRoutes);
-app.use('/menuItems', menuRoutes);
-app.use('/orders', orderRoutes);
-app.use('/notifications', notificationRoutes);
+// Define application routes
+app.use('/auth', usersRouter); // Authentication routes
+app.use('/restaurants', restaurantRoutes); // Restaurant routes
+app.use('/menuItems', menuRoutes); // Menu item routes
+app.use('/orders', orderRoutes); // Order routes
+app.use('/notifications', notificationRoutes); // Notification routes
 
-
+// Start the server
 app.listen(PORT, () => {
-  console.log('The express app is ready on port', PORT);
+  console.log('The express app is ready on port', PORT); // Log that the server is running
 });
-
 
 //! CODE GRAVEYARD
 
