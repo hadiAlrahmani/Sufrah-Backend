@@ -3,21 +3,30 @@ const Restaurant = require("../models/restaurantModel");
 const createRestaurant = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ error: "Access denied. Admins only can create restaurants." });
+      return res.status(403).json({ error: "Access denied. Only admins can create restaurants." });
     }
-    // Add the user (admin) as the owner of the restaurant
+
+    const { name, description, location, openingHours, image } = req.body;
+
+    // ✅ Validate required fields
+    if (!name || !description || !location || !openingHours || !image) {
+      return res.status(400).json({ error: "All fields, including image URL, are required." });
+    }
+
+    // ✅ Create new restaurant and set the admin user as the owner
     const newRestaurant = await Restaurant.create({
-      ...req.body,
-      owner: req.user._id,
+      name,
+      description,
+      location,
+      openingHours,
+      image,
+      owner: req.user._id, // ✅ Assign admin as owner
     });
+
     res.status(201).json(newRestaurant);
   } catch (error) {
     console.error("Error creating restaurant:", error);
-    res
-      .status(400)
-      .json({ error: "Failed to create restaurant", details: error.message });
+    res.status(400).json({ error: "Failed to create restaurant", details: error.message });
   }
 };
 
