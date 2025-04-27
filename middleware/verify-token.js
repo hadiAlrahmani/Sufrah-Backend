@@ -1,22 +1,47 @@
-const jwt = require('jsonwebtoken'); // Import the jsonwebtoken library
+const jwt = require('jsonwebtoken');
 
-// Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
   try {
-    // Extract token from the Authorization header
-    const token = req.headers.authorization.split(' ')[1];
+    const authHeader = req.headers.authorization;
 
-    // Verify the token using the secret key
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authorization header missing or malformed' });
+    }
+
+    const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Attach the decoded user information to the request object
     req.user = decoded;
-
-    next(); // Proceed to the next middleware or route handler
+    next();
   } catch (err) {
-    // Handle invalid token error
-    res.status(401).json({ message: 'Invalid token' }); // Respond with an unauthorized status
+    console.error('JWT Error:', err);
+    res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
 
-module.exports = verifyToken; // Export the verifyToken middleware
+module.exports = verifyToken;
+
+//! CODE GRAVEYARD
+
+// const jwt = require('jsonwebtoken'); // Import the jsonwebtoken library
+
+// // Middleware to verify JWT token
+// const verifyToken = (req, res, next) => {
+//   try {
+//     // Extract token from the Authorization header
+//     const token = req.headers.authorization.split(' ')[1];
+
+//     // Verify the token using the secret key
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+//     // Attach the decoded user information to the request object
+//     req.user = decoded;
+
+//     next(); // Proceed to the next middleware or route handler
+//   } catch (err) {
+//     // Handle invalid token error
+//     res.status(401).json({ message: 'Invalid token' }); // Respond with an unauthorized status
+//   }
+// };
+
+// module.exports = verifyToken; // Export the verifyToken middleware

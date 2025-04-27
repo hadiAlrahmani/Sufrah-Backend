@@ -89,33 +89,47 @@ const getOrderById = async (req, res) => {
 };
 
 // Update the status of an order
+// Update the status of an order
 const updateOrderStatus = async (req, res) => {
     try {
-        if (req.user.role !== 'admin') return res.status(403).json({ error: 'Access denied. Admins only.' }); // Check for admin role
-
-        const { status } = req.body;
-        const allowedStatuses = ['Pending', 'Being Made', 'Ready']; // Allowed statuses
-
-        if (!allowedStatuses.includes(status)) {
-            return res.status(400).json({ error: 'Invalid order status.' }); 
+        // Check for admin role
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Access denied. Admins only.' });
         }
 
-        const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true }); // Update order
+        const { status } = req.body;
+        const allowedStatuses = ['Pending', 'Being Made', 'Ready', 'Rejected']; // "Rejected" added to allowed statuses
 
-        if (!order) return res.status(404).json({ error: 'Order not found' }); 
+        // Check if the status is valid
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({ error: 'Invalid order status.' });
+        }
 
-        order.status = status; 
-        await order.save(); 
+        // Find the order and update its status
+        const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
 
-        // Create notification for the user
+        // Handle if the order is not found
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        // Create a notification for the user
+        const notificationMessage = status === 'Being Made' 
+            ? `Your order is now being prepared.` 
+            : status === 'Rejected'
+                ? `Sorry, your order has been rejected.`
+                : `UPDATE: Your order is now ${status}`;
+        
         await Notification.create({
             user: order.user,
-            message: `UPDATE: Your order is now ${status}`
+            message: notificationMessage,
+            read: false, // Ensure the notification is unread initially
         });
 
-        res.status(200).json(order); 
+        // Return the updated order to the client
+        res.status(200).json(order);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update order status' }); 
+        res.status(500).json({ error: 'Failed to update order status' });
     }
 };
 
@@ -134,6 +148,19 @@ const deleteOrder = async (req, res) => {
     }
 };
 
+// Get orders for a specific restaurant (populated version)
+const getRestaurantOrders = async (req, res) => {
+    try {
+      const restaurantId = req.params.id;
+  
+      const orders = await Order.find({ restaurant: restaurantId }); // Fetch orders for the specific restaurant
+  
+      res.status(200).json(orders); // Return the basic order details
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch restaurant orders' });
+    }
+  };
+
 module.exports = {
     createOrder,
     getAllOrders,
@@ -141,4 +168,5 @@ module.exports = {
     getOrderById,
     updateOrderStatus,
     deleteOrder,
+    getRestaurantOrders,
 };

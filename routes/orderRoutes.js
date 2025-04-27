@@ -21,4 +21,7 @@ router.put('/:id', verifyToken, orderController.updateOrderStatus);
 // Delete an order by ID (authentication required)
 router.delete('/:id', verifyToken, orderController.deleteOrder);
 
+// Get orders for a specific restaurant (authentication required)
+router.get('/restaurant/:id', verifyToken, orderController.getRestaurantOrders);
+
 module.exports = router; // Export the router
