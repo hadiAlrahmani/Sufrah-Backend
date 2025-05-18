@@ -12,6 +12,7 @@ const restaurantRoutes = require('./routes/restaurantRoutes'); // Restaurant-rel
 const menuRoutes = require('./routes/menuRoutes'); // Menu item-related routes
 const orderRoutes = require('./routes/orderRoutes'); // Order-related routes
 const notificationRoutes = require('./routes/notificationRoutes'); // Notification-related routes
+const statisticsRoutes = require("./routes/statisticsRoutes");
 
 const app = express(); // Create an Express application
 const PORT = process.env.PORT || 3000; // Set the port to listen on
@@ -27,6 +28,7 @@ app.use('/restaurants', restaurantRoutes); // Restaurant routes
 app.use('/menuItems', menuRoutes); // Menu item routes
 app.use('/orders', orderRoutes); // Order routes
 app.use('/notifications', notificationRoutes); // Notification routes
+app.use('/statistics', statisticsRoutes); // Statistics routes
 
 // Start the server
 app.listen(PORT, () => {
