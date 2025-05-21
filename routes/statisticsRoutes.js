@@ -10,6 +10,6 @@ console.log('isAdmin:', isAdmin);
 console.log('getOrderStatistics:', getOrderStatistics);
 
 // Define route for order statistics with logging for debugging
-router.get("/order-statistics/:restaurantId", verifyToken, isAdmin, getOrderStatistics);
+router.get('/order-statistics/:restaurantId', verifyToken, isAdmin, getOrderStatistics);
 
 module.exports = router;
