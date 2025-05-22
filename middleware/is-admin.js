@@ -1,3 +1,5 @@
+//! If Admin
+// Some routes in Sufrah are only meant for admins like managing restaurants or orders. isAdmin checks if the user’s role is actually ‘admin’. If yes th eroute is allowed Otherwise its blocked for security.
 const isAdmin = (req, res, next) => {
   try {
     console.log('User Role:', req.user?.role); // Log the role to verify

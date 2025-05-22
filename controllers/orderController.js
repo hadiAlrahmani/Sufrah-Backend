@@ -3,7 +3,8 @@ const Order = require('../models/orderModel');
 const MenuItem = require('../models/menuItemModel'); 
 const Notification = require('../models/notificationModel');
 
-// Create a new order
+//! Create a new order
+// When the customer places an order, this function saves it to the database.
 const createOrder = async (req, res) => {
     try {
         const { restaurant, items } = req.body;
@@ -22,7 +23,7 @@ const createOrder = async (req, res) => {
 
             totalPrice += menuItem.price * item.quantity; // Calculate total price
         }
-
+// and sets the default status to "Pending".
         const order = await Order.create({
             user: req.user._id, 
             restaurant,
@@ -31,6 +32,7 @@ const createOrder = async (req, res) => {
             status: 'Pending',
         });
 
+        //It also creates a notification to let the user know their order is received.
         // Create notification for the user
         await Notification.create({
             user: req.user._id,
@@ -96,7 +98,7 @@ const updateOrderStatus = async (req, res) => {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ error: 'Access denied. Admins only.' });
         }
-
+        //  Admins can change the status of an order to “Being Made”, “Ready”, or “Rejected”. 
         const { status } = req.body;
         const allowedStatuses = ['Pending', 'Being Made', 'Ready', 'Rejected']; // "Rejected" added to allowed statuses
 
@@ -112,7 +114,7 @@ const updateOrderStatus = async (req, res) => {
         if (!order) {
             return res.status(404).json({ error: 'Order not found' });
         }
-
+        // Every time the status is updated, a notification is sent to the customer to inform them of the change.
         // Create a notification for the user
         const notificationMessage = status === 'Being Made' 
             ? `Your order is now being prepared.` 
@@ -132,6 +134,8 @@ const updateOrderStatus = async (req, res) => {
         res.status(500).json({ error: 'Failed to update order status' });
     }
 };
+
+// So the real-time tracking happens by keeping the status of the order in the database and updating it as the restaurant processes it. The frontend then listens to these updates and shows the user the live status, along with a notification.
 
 // Delete an order
 const deleteOrder = async (req, res) => {

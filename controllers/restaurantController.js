@@ -1,7 +1,8 @@
 const Restaurant = require("../models/restaurantModel");
-const MenuItem = require("../models/menuItemModel"); // ✅ Import the MenuItem model
+const MenuItem = require("../models/menuItemModel"); //  Import the MenuItem model
 
-// Create a new restaurant
+//! Create a new restaurant
+// This function allows admins to add a new restaurant. It takes the data sent from the frontend, saves it to MongoDB, and sends back the created restaurant.
 const createRestaurant = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -30,7 +31,8 @@ const createRestaurant = async (req, res) => {
   }
 };
 
-// Get all restaurants
+//! Get all restaurants
+// This fetches all restaurants from the database. It’s used to display them on the homepage for users.
 const getRestaurants = async (req, res) => {
   try {
     const restaurants = await Restaurant.find();
@@ -52,7 +54,8 @@ const getRestaurantById = async (req, res) => {
   }
 };
 
-// Update a restaurant
+//! Update a restaurant
+// Admins can update restaurant details like name or hours. This uses the restaurant ID and new data to update it in MongoDB.
 const updateRestaurant = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -74,7 +77,8 @@ const updateRestaurant = async (req, res) => {
   }
 };
 
-// ✅ Delete a restaurant and all its related menu items
+//! Delete a restaurant and all its related menu items
+// This handles deleting a restaurant by its ID. It’s only available for admins.
 const deleteRestaurant = async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -87,7 +91,7 @@ const deleteRestaurant = async (req, res) => {
     if (!deletedRestaurant)
       return res.status(404).json({ error: "Restaurant not found" });
 
-    // ✅ Delete all menu items related to this restaurant
+    // Delete all menu items related to this restaurant
     await MenuItem.deleteMany({ restaurant: restaurantId });
 
     res.status(200).json({ message: "Restaurant and its menu items deleted successfully" });
@@ -112,6 +116,6 @@ module.exports = {
   getRestaurants,
   getRestaurantById,
   updateRestaurant,
-  deleteRestaurant, // ✅ updated
+  deleteRestaurant, //  updated
   getAdminRestaurants,
 };

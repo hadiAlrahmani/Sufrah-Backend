@@ -14,7 +14,8 @@ router.post('/signup', async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ error: 'Username already exists. Please try again.' }); // Error for existing username
     }
-
+//! Hashing Password
+//When a user signs up, their password is hashed using bcrypt before saving it in the database. This makes sure the actual password is never stored in plain text, which keeps users secure in case the database is compromised. I’m using hashSync() and salt rounds from my environment file for extra security.
     const hashedPassword = bcrypt.hashSync(password, parseInt(process.env.SALT_ROUNDS)); // Hash the password
 
     const user = await User.create({
@@ -22,7 +23,7 @@ router.post('/signup', async (req, res) => {
       hashedPassword,
       role: role || 'user' // Default role to 'user' if not provided
     });
-
+//! JWT Generation
     const token = jwt.sign(
       {
         _id: user._id,
@@ -38,6 +39,8 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+//After the frontend sends the login credentials, the backend first checks if the user exists and if the password is correct. If it’s valid, this part of the code creates a JWT token using jwt.sign(), which includes the user’s ID, role, and username. This token is then sent back to the frontend and stored in localStorage. Later, this token is used to access protected routes and prove the user is logged in.
+
 // User signin route
 router.post('/signin', async (req, res) => {
   try {
@@ -47,7 +50,8 @@ router.post('/signin', async (req, res) => {
     if (!existingUser) {
       return res.status(400).json({ error: 'Invalid Credentials' }); // Error if user not found
     }
-
+//!Comparing bycrpt
+// When logging in, I compare the password they enter with the hashed version in the database using bcrypt.compareSync. If it matches, I create a JWT token and log them in.
     const isValidPassword = bcrypt.compareSync(password, existingUser.hashedPassword); // Compare passwords
     if (!isValidPassword) {
       throw Error('Invalid Credentials'); // Error for invalid password

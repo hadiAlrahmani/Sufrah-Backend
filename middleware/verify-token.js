@@ -1,3 +1,5 @@
+//! Protected Routes
+// To protect routes, I use this middleware. It checks for a valid JWT token sent in the Authorization header. If the token is valid, it lets the user through. Otherwise, it blocks access. This makes sure only logged-in users can access private data like cart, orders, or admin features.
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
